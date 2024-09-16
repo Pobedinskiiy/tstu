@@ -1,11 +1,14 @@
-class Method:
+from visualization import Visualization
+
+class Method(Visualization):
     def __init__(self, a0, b0, func, eps) -> None:
         if a0 > b0:
             a0, b0 = b0, a0
+        super().__init__(a0, b0, func, eps)
         self.a0 = a0
         self.b0 = b0
         self.func = func
         self.eps = eps
 
-    def calculate(self) -> float:
+    def calculate(self) -> (float, int):
         pass
