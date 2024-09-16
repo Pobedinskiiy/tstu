@@ -1,3 +1,6 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 from golden_ratio import GoldenRatio
 from halving import Halving
 from fibonacci import Fibonacci
@@ -6,9 +9,14 @@ from fibonacci import Fibonacci
 def function(x: float) -> float:
     return x ** 3 - 13.5 * x ** 2 + 54 * x - 15
 
-goldRatio = GoldenRatio(4.5, 9, function, 0.01)
+a0, b0, eps = 4.5, 9, 0.01
+func_x = list(np.arange(a0, b0+eps, eps))
+func_y = [function(x) for x in func_x]
+goldRatio = GoldenRatio(a0, b0, function, eps)
 print(goldRatio.calculate())
-hal = Halving(4.5, 9, function, 0.01)
+plt.plot(func_x, func_y)
+plt.show()
+hal = Halving(a0, b0, function, eps)
 print(hal.calculate())
-fib = Fibonacci(4.5, 9, function, 0.01)
+fib = Fibonacci(a0, b0, function, eps)
 print(fib.calculate())
