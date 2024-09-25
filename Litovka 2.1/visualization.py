@@ -1,11 +1,11 @@
-from cProfile import label
-
 import numpy as np
 import matplotlib.pyplot as plt
 from qbstyles import mpl_style
+from typing import Any
+
 
 class Visualization:
-    def __init__(self, a0: float, b0: float, func, eps: float) -> None:
+    def __init__(self, a0: float, b0: float, func: Any, eps: float) -> None:
         mpl_style(minor_ticks=False)
         self.fig = plt.figure("Litovka 2.1 visualization", figsize=(16, 9))
         self.ax = self.fig.subplots()
@@ -20,6 +20,8 @@ class Visualization:
         for i in range(len(self.x)):
             self.ax.scatter(self.x[i], self.y[i], color=np.random.rand(3,), label=self.labels[i])
         self.ax.legend(frameon=True, loc="upper left", fontsize=12)
+        self.ax.set_xlabel("X")
+        self.ax.set_ylabel("Y")
         self.fig.show()
-        plt.pause(60)
+        plt.pause(7)
         plt.close("all")
