@@ -39,7 +39,9 @@ class Decoder:
         " меньше ": " 12 ",
     }
 
+    tokens_numbers_ru = {}
     tokens_numbers = {}
+    variables_ru = {}
     variables = {}
 
     def __init__(self) -> None:
@@ -48,22 +50,32 @@ class Decoder:
     def decoding(self, code: str) -> str:
         code = "".join(code.split("\n"))
         self.code = code
+        self.tokens_numbers_ru = {}
         self.tokens_numbers = {}
+        self.variables_ru = {}
+        self.variables = {}
         for number in set(re.findall(r'\d+', self.code)):
-            self.tokens_numbers[number] = f"конс. {number}"
-        for key, value in {**self.tokens_ru, **self.tokens_numbers}.items():
+            self.tokens_numbers_ru[number] = f"конс. {number}"
+            self.tokens_numbers[f"конс. {number}"] = f"13[{number}]"
+        for key, value in {**self.tokens_ru, **self.tokens_numbers_ru}.items():
             self.code = self.code.replace(key, value)
             code = code.replace(f"{key}", " ")
         for variable in list(set(code.split(" "))):
             if variable != "":
-                self.variables[variable] = f"переменная {variable}"
-        for key, value in self.variables.items():
+                self.variables_ru[variable] = f"переменная {variable}"
+                self.variables[f"переменная {variable}"] = f"14 [{variable}]"
+        for key, value in self.variables_ru.items():
             self.code = self.code.replace(key, value)
 
         d = self.code
         for key, value in self.tokens_decoded.items():
             d = d.replace(key, value)
-        # print(d)
+        for key, value in self.tokens_numbers.items():
+            d = d.replace(key, value)
+        for key, value in self.variables.items():
+            d = d.replace(key, value)
+
+        print(d)
         return self.code
 
 
