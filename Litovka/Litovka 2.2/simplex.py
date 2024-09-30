@@ -1,12 +1,12 @@
-from typing import Any
 import numpy as np
+from typing import Any
+
+from visualization import Visualization
 
 
-class Simplex:
-    def __init__(self, func: Any,
-                 simplex: list = None,
-                 eps: float = 0.001,
-                 max_repeats: int = 1000) -> None:
+class Simplex(Visualization):
+    def __init__(self, func: Any, simplex: list = None, eps: float = 0.001, max_repeats: int = 1000) -> None:
+        super().__init__(func)
         self.func = func
         if simplex is None:
             self.simplex = np.array([[0, 0], [0.1, 0.1], [0, 0.1]])
@@ -16,6 +16,8 @@ class Simplex:
 
     def calculate(self) -> (float, float, int):
         for i in range(self.max_repeats):
+            self.x1_.extend([self.simplex[0][0], self.simplex[1][0], self.simplex[2][0]])
+            self.x2_.extend([self.simplex[0][1], self.simplex[1][1], self.simplex[2][1]])
             func_vertices = np.array([self.func(*vertex) for vertex in self.simplex])
 
             sorted_indices = np.argsort(func_vertices)

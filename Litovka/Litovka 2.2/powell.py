@@ -1,11 +1,13 @@
 from typing import Any
 
+from visualization import Visualization
 
-class Powell:
+
+class Powell(Visualization):
     def __init__(self, func: Any, x1: float = 0, x2: float = 0, eps: float = 0.01, h0: float = 1) -> None:
+        super().__init__(func)
         self.func = func
-        self.x1 = x1
-        self.x2 = x2
+        self.x1, self.x2 = x1, x2
         self.eps = eps
         self.fx0 = func(x1, x2)
         self.h0 = h0
@@ -28,6 +30,8 @@ class Powell:
         del_x1, del_x2 = self.__calculate_direction()
         count, end = 0, 0
         while end != 3:
+            self.x1_.append(self.x1)
+            self.x2_.append(self.x2)
             fx1 = self.func(self.x1 + del_x1, self.x2 + del_x2)
             if self.fx0 > fx1:
                 self.x1 += del_x1
