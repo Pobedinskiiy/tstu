@@ -1,42 +1,50 @@
 from typing import Any
+import numpy as np
 
 
 class Simplex:
-    def __init__(self, func: Any, x1: float, x2: float, eps: float = 0.01, h0: float = 0.001) -> None:
+    def __init__(self, func: Any,
+                 simplex: list = None,
+                 eps: float = 0.001,
+                 max_repeats: int = 1000) -> None:
         self.func = func
-        self.x1 = x1
-        self.x2 = x2
+        if simplex is None:
+            self.simplex = np.array([[0, 0], [0.1, 0.1], [0, 0.1]])
         self.eps = eps
-        self.h0 = h0
-        self.x3 = x1 + h0
-        self.x4 = x2
-        self.x5 = x1
-        self.x6 = x2 + h0
-        self.fx0 = self.func(self.x1, self.x2)
-        self.fx1 = self.func(self.x3, self.x4)
-        self.fx2 = self.func(self.x5, self.x6)
+        self.max_repeats = max_repeats
+
 
     def calculate(self) -> (float, float, int):
-        count, end = 0, 0
-        fx0, fx1, fx2 = self.fx0, self.fx1, self.fx2
-        while end != 2:
-            if fx0 == self.fx0 or fx1 == self.fx1 or fx2 == self.fx2:
-                if end == 1:
-                    fx0, fx1, fx2 = self.fx0, self.fx1, self.fx2
-                end += 1
+        for i in range(self.max_repeats):
+            func_vertices = np.array([self.func(*vertex) for vertex in self.simplex])
+
+            sorted_indices = np.argsort(func_vertices)
+            self.simplex = self.simplex[sorted_indices]
+
+            worst = self.simplex[-1]
+
+            centroid = np.mean(self.simplex[:-1], axis=0)
+
+            reflection = centroid + (centroid - worst)
+            reflection_value = self.func(*reflection)
+
+            if func_vertices[0] <= reflection_value < func_vertices[-2]:
+                self.simplex[-1] = reflection
+            elif reflection_value < func_vertices[0]:
+                expansion = centroid + 2 * (centroid - worst)
+                expansion_value = self.func(*expansion)
+                if expansion_value < reflection_value:
+                    self.simplex[-1] = expansion
+                else:
+                    self.simplex[-1] = reflection
             else:
-                end = 0
+                contraction = centroid - 0.5 * (centroid - worst)
+                contraction_value = self.func(*contraction)
+                if contraction_value < func_vertices[-1]:
+                    self.simplex[-1] = contraction
+                else:
+                    self.simplex[1:] = self.simplex[0] + 0.5 * (self.simplex[1:] - self.simplex[0])
 
-            if self.fx0 > self.fx1 and self.fx0 > self.fx2:
-                pass
-            elif self.fx1 > self.fx2:
-                pass
-            else:
-                pass
-
-            self.fx0 = self.func(self.x1, self.x2)
-            self.fx1 = self.func(self.x3, self.x4)
-            self.fx2 = self.func(self.x5, self.x6)
-
-            count += 1
-        return self.x1, self.x2, count
+            if np.max(np.abs(func_vertices - func_vertices[0])) < self.eps:
+                return *self.simplex[0], i
+        return *self.simplex[0], self.max_repeats
