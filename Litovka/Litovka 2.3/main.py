@@ -1,6 +1,7 @@
 import numpy as np
 
 from gradient import Gradient
+from fastest_descent import FastestDescent
 
 a, b, c, d, alpha = -6, -1, 2, 3, 20
 
@@ -18,3 +19,10 @@ gradient.plot([-10, 0], [-5, 5], 30)
 gradient = Gradient(function_rosenbrock, 0, 0, 0.001, iterations=100000)
 print(*gradient.calculate())
 gradient.plot([0, 2], [0, 2], 100)
+
+fastest_descent = FastestDescent(function_ellipse, 0, 0)
+print(*fastest_descent.calculate())
+fastest_descent.plot([-10, 0], [-5, 5], 30)
+fastest_descent = FastestDescent(function_rosenbrock, 0, 0, 0.001, iterations=100000)
+print(*fastest_descent.calculate())
+fastest_descent.plot([0, 2], [0, 2], 100)
