@@ -5,26 +5,26 @@ from visualization import Visualization
 
 
 class Gradient(Visualization):
-    def __init__(self, func: Any, x0: float, y0: float, h0: float = 0.1, eps: float = 0.001, iterations: int = 1000) -> None:
+    def __init__(self, func: Any,
+                 x: float = 0, y: float = 0,
+                 h: float = 1e-1, eps: float = 1e-3,
+                 iterations: int = 1000) -> None:
         super().__init__(func)
-        self.func = func
-        self.x0 = x0
-        self.y0 = y0
-        self.h0 = h0
-        self.eps = eps
+        self.x, self.y = x, y
+        self.h, self.eps = h, eps
         self.iterations = iterations
 
-    def __estimate_gradient(self, x: float, y: float, h: float = 1e-6) -> (float, float):
-        return ((self.func(x + h, y) - self.func(x - h, y)) / (2 * h),
-                (self.func(x, y + h) - self.func(x, y - h)) / (2 * h))
+    def __estimate_gradient(self) -> (float, float):
+        return ((self.func(self.x + self.h, self.y) - self.func(self.x - self.h, self.y)) / (2 * self.h),
+                (self.func(self.x, self.y + self.h) - self.func(self.x, self.y - self.h)) / (2 * self.h))
 
     def calculate(self) -> (float, float):
         for _ in range(self.iterations):
-            self.plot_x.append(self.x0)
-            self.plot_y.append(self.y0)
-            df_dx, df_dy = self.__estimate_gradient(self.x0, self.y0)
+            self.plot_x.append(self.x)
+            self.plot_y.append(self.y)
+            df_dx, df_dy = self.__estimate_gradient()
             if math.sqrt(df_dx ** 2 + df_dy ** 2) < self.eps:
                 break
-            self.x0 -= self.h0 * df_dx
-            self.y0 -= self.h0 * df_dy
-        return self.x0, self.y0
+            self.x -= self.h * df_dx
+            self.y -= self.h * df_dy
+        return self.x, self.y

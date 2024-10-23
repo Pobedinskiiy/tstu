@@ -64,6 +64,6 @@ class Penalty(Visualization):
             df_dy += penalty
             if math.sqrt(df_dx ** 2 + df_dy ** 2) < self.eps:
                 break
-            self.x -= df_dx
-            self.y -= df_dy
+            self.x -= self.h * df_dx
+            self.y -= self.h * df_dy
         return self.x, self.y
