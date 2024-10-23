@@ -4,9 +4,9 @@ from qbstyles import mpl_style
 from typing import Any
 
 class Visualization:
-    def __init__(self, func: Any):
+    def __init__(self, func: Any, constraints: list) -> None:
         mpl_style(minor_ticks=False)
-        self.func = func
+        self.func, self.constraints = func, constraints
         self.plot_x, self.plot_y = [], []
 
     def plot(self, x_border: list, y_border: list, levels: int) -> None:
