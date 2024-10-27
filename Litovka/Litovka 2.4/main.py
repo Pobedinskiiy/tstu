@@ -15,6 +15,13 @@ def constraint_function_1(x: float, y: float) -> float:
 def constraint_function_2(x: float, y: float) -> float:
     return x + y
 
-penalty = Penalty(function_ellipse, [[constraint_function_1, "<=" , 0], [constraint_function_2, ">=", 0]])
-print(*penalty.calculate(Barrier.INTERNAL))
+penalty = Penalty(function_ellipse, [[constraint_function_1, "<=" , 0], [constraint_function_2, ">=", 0]],
+                  Barrier.EXTERNAL,
+                  -10, -5)
+print(*penalty.calculate())
+penalty.plot([-10, 0], [-5, 5], 30)
+penalty = Penalty(function_ellipse, [[constraint_function_1, "<=" , 0], [constraint_function_2, ">=", 0]],
+                  Barrier.INTERNAL,
+                  -10, -5)
+print(*penalty.calculate())
 penalty.plot([-10, 0], [-5, 5], 30)
