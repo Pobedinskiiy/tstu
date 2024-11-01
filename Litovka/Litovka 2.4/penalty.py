@@ -20,7 +20,7 @@ class Penalty(Visualization):
         self.h, self. eps = h, eps
         self.iterations = iterations
         self.x_stop, self.y_stop, self.z_stop = 0, 0, 0
-        self.internal_penalty, end = False, False
+        self.internal_penalty, self.end = False, False
 
     def __external(self, x: float, y: float) -> float:
         penalty, h = 0, 1e-2
@@ -37,7 +37,7 @@ class Penalty(Visualization):
         return penalty
 
     def __internal(self, x: float, y: float) -> float:
-        self.internal_penalty, penalty, h = 0, 1, False
+        self.internal_penalty, penalty, h = False, 0, 1
         for i in range(len(self.constraints)):
             constrain_fz = self.constraints[i][0](x, y)
             if self.constraints[i][1] == "<" and constrain_fz >= self.constraints[i][2]:
@@ -74,7 +74,7 @@ class Penalty(Visualization):
             self.plot_x.append(self.x)
             self.plot_y.append(self.y)
             df_dx, df_dy = self.__estimate_gradient()
-            if math.sqrt(df_dx ** 2 + df_dy ** 2) < self.eps or self.end:
+            if math.sqrt(df_dx ** 2 + df_dy ** 2) < self.eps or self.end is True:
                 break
             self.x -= self.h * df_dx
             self.y -= self.h * df_dy
