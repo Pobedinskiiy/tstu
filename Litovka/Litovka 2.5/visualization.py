@@ -4,9 +4,9 @@ from qbstyles import mpl_style
 from typing import Any
 
 class Visualization:
-    def __init__(self, func: Any, constraints: list) -> None:
+    def __init__(self, func: Any, inv_bounds: list) -> None:
         mpl_style(minor_ticks=False)
-        self.func, self.constraints = func, constraints
+        self.func, self.inv_bounds = func, inv_bounds
         self.plot_x, self.plot_y = [], []
 
     def plot(self, x_border: list, y_border: list, levels: int) -> None:
@@ -18,19 +18,10 @@ class Visualization:
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         ax.grid()
-        fx_c, fy_c = [], []
-        for i in range(len(fx)):
-            for j in range(len(fy)):
-                if -0.06 < self.constraints[0][0](fx[i], fy[j]) < 0:
-                    fx_c.append(fx[i])
-                    fy_c.append(fy[j])
-        ax.plot(fx_c, fy_c, color="grey")
-        fx_c, fy_c = [], []
-        for i in range(len(fx)):
-            for j in range(len(fy)):
-                if 0 <= self.constraints[1][0](fx[i], fy[j]) <= 1e-2:
-                    fx_c.append(fx[i])
-                    fy_c.append(fy[j])
-        ax.plot(fx_c, fy_c, color="grey")
-        ax.plot(self.plot_x, self.plot_y, color="g")
+        for i in range(len(self.inv_bounds)):
+            fx_bound, fy_bound = fx, fy
+            for j in range(len(fy_bound)):
+                fx_bound[j] = self.inv_bounds[i](fy_bound[j])
+            ax.plot(fx_bound, fy_bound, color="grey")
+        ax.plot(self.plot_x, self.plot_y, color="green")
         plt.show()
