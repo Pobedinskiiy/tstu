@@ -1,4 +1,4 @@
-## LMCS - Linguistic Means of Computing Systems
+## Linguistic means of computing systems
 
 ---
 *Laboratory works on the subject of linguistic means of computer systems.* 

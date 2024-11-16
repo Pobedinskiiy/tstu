@@ -9,6 +9,7 @@ class Barrier(Enum):
     EXTERNAL = 1
     INTERNAL = 2
 
+
 class Penalty(Visualization):
     def __init__(self, func: Any,
                  bounds: list,
