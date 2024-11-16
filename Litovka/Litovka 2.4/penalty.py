@@ -4,17 +4,21 @@ from enum import Enum
 
 from visualization import Visualization
 
+
 class Barrier(Enum):
     EXTERNAL = 1
     INTERNAL = 2
 
 class Penalty(Visualization):
-    def __init__(self, func: Any, constraints: list, inv_bound: list,
+    def __init__(self, func: Any,
+                 bounds: list,
+                 inv_bounds: list,
                  barrier: Barrier = Barrier.EXTERNAL,
                  x: float = 0, y: float = 0,
                  h: float = 1e-2, eps: float = 1e-2,
                  iterations: int = 100000) -> None:
-        super().__init__(func, constraints, inv_bound)
+        super().__init__(func, inv_bounds)
+        self.bounds = bounds
         self.x, self.y = x, y
         self.barrier = barrier
         self.h, self. eps = h, eps
@@ -24,29 +28,29 @@ class Penalty(Visualization):
 
     def __external(self, x: float, y: float) -> float:
         penalty, h = 0, 1e-1
-        for i in range(len(self.constraints)):
-            func_val = self.constraints[i][0](x, y)
-            if self.constraints[i][1] == "<" and func_val >= self.constraints[i][2]:
+        for i in range(len(self.bounds)):
+            func_val = self.bounds[i][0](x, y)
+            if self.bounds[i][1] == "<" and func_val >= self.bounds[i][2]:
                 penalty += h * func_val ** 2
-            if self.constraints[i][1] == "<=" and func_val > self.constraints[i][2]:
+            if self.bounds[i][1] == "<=" and func_val > self.bounds[i][2]:
                 penalty += h * func_val ** 2
-            if self.constraints[i][1] == ">" and func_val <= self.constraints[i][2]:
+            if self.bounds[i][1] == ">" and func_val <= self.bounds[i][2]:
                 penalty += h * func_val ** 2
-            if self.constraints[i][1] == ">=" and func_val < self.constraints[i][2]:
+            if self.bounds[i][1] == ">=" and func_val < self.bounds[i][2]:
                 penalty += h * func_val ** 2
         return penalty
 
     def __internal(self, x: float, y: float) -> float:
         penalty, h = 0, 1e-2
-        for i in range(len(self.constraints)):
-            constrain_fz = self.constraints[i][0](x, y)
-            if self.constraints[i][1] == "<" and constrain_fz >= self.constraints[i][2]:
+        for i in range(len(self.bounds)):
+            constrain_fz = self.bounds[i][0](x, y)
+            if self.bounds[i][1] == "<" and constrain_fz >= self.bounds[i][2]:
                 penalty += h / np.log(constrain_fz + 1e-10)
-            if self.constraints[i][1] == "<=" and constrain_fz > self.constraints[i][2]:
+            if self.bounds[i][1] == "<=" and constrain_fz > self.bounds[i][2]:
                 penalty += h / np.log(constrain_fz)
-            if self.constraints[i][1] == ">" and constrain_fz <= self.constraints[i][2]:
+            if self.bounds[i][1] == ">" and constrain_fz <= self.bounds[i][2]:
                 penalty += h / np.log(-constrain_fz - 1e-10)
-            if self.constraints[i][1] == ">=" and constrain_fz < self.constraints[i][2]:
+            if self.bounds[i][1] == ">=" and constrain_fz < self.bounds[i][2]:
                 penalty += h / np.log(-constrain_fz)
         return penalty
 
