@@ -1,12 +1,10 @@
 import numpy as np
-import warnings
-
 
 def simplex(opt_type, A, B, C, D, M):
     (m, n) = A.shape
     basic_vars = []
     count = n
-    R = np.eye(m)
+    valid_ratios_mask = np.eye(m)
 
     for i in range(m):
         basic_vars.append(count)
@@ -18,64 +16,54 @@ def simplex(opt_type, A, B, C, D, M):
             count += 1
         elif D[i] == -1:
             C = np.vstack((C, [[0], [M if opt_type == 'min' else -M]]))
-            R = repeatColumnNegative(R, count + 1 - n)
+            valid_ratios_mask = repeatColumnNegative(valid_ratios_mask, count - n)
             count += 2
 
-    A = np.hstack((A, R))
-    st = np.vstack((np.hstack((-np.transpose(C), np.array([[0]]))), np.hstack((A, B))))
-    z_optimal = C.T @ np.vstack((np.zeros((n, 1)), insertZeroToCol(B, count + 1 - n)))
-    X = np.zeros((count, 1))
+    tableau = np.vstack((np.hstack((-C.T, np.array([[0]]))), np.hstack((np.hstack((A, valid_ratios_mask)), B))))
+    decision = np.zeros((count, 1))
 
-    if z_optimal != 0:
+    if C.T @ np.vstack((np.zeros((n, 1)), insertZeroToCol(B, count - n))) != 0:
         for i in range(m):
             if D[i] in np.array([0, -1]):
-                st[0, :] += [M if opt_type == 'min' else -M] * st[i + 1, :]
+                tableau[0, :] += [M if opt_type == 'min' else -M] * tableau[i + 1, :]
 
     while True:
-        w = np.amax(st[0, :-1]) if opt_type == 'min' else np.amin(st[0, :-1])
-        iw = np.argmax(st[0, :-1]) if opt_type == 'min' else np.argmin(st[0, :-1])
+        w = np.amax(tableau[0, :-1]) if opt_type == 'min' else np.amin(tableau[0, :-1])
+        iw = np.argmax(tableau[0, :-1]) if opt_type == 'min' else np.argmin(tableau[0, :-1])
 
         if (w <= 0 and opt_type == 'min') or (w >= 0 and opt_type == 'max'):
             break
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            T = st[1:, -1] / st[1:, iw]
+        with np.errstate(divide='ignore', invalid='ignore'):
+            ratios = np.divide(tableau[1:, -1], tableau[1:, iw])
 
-        R = np.logical_and(T != np.inf, T > 0)
-        k, ik = minWithMask(T, R)
+        valid_ratios_mask = (ratios > 0) & (~np.isinf(ratios))
+        ik = np.argmin(np.where(valid_ratios_mask == 1, ratios, np.inf))
 
-        cz = st[[0], :]
+        cz = tableau[[0], :]
 
-        pivot = st[ik + 1, iw]
-        prow = st[ik + 1, :] / pivot
+        pivot = tableau[ik + 1, iw]
+        prow = tableau[ik + 1, :] / pivot
 
-        st -= st[:, [iw]] * prow
-        st[ik + 1, :] = prow
+        tableau -= tableau[:, [iw]] * prow
+        tableau[ik + 1, :] = prow
 
         basic_vars[ik] = iw
-        basic = st[:, -1]
 
         for k in range(np.size(basic_vars) - 1):
-            X[basic_vars[k]] = basic[k + 1]
+            decision[basic_vars[k]] = tableau[:, -1][k + 1]
 
-        z_optimal = cz[0, -1] - cz[[0], :count] @ X
-        st[0, -1] = z_optimal
+        tableau[0, -1] = cz[0, -1] - cz[[0], :count] @ decision
 
-    return X, z_optimal[0, 0]
-
-
-def minWithMask(x, mask):
-    masked_x = np.where(mask == 1, x, np.inf)
-    return np.min(masked_x), np.argmin(masked_x)
+    return decision, tableau[0, -1]
 
 
 def repeatColumnNegative(mat, h):
-    return np.hstack((mat[:, :h - 1], -mat[:, [h - 1]], mat[:, h - 1:np.size(mat)]))
+    return np.hstack((mat[:, :h], -mat[:, [h]], mat[:, h:np.size(mat)]))
 
 
 def insertZeroToCol(col, h):
-    return np.vstack((col[:h - 1, [0]], np.array([[0]]), col[h - 1:np.size(col), [0]]))
+    return np.vstack((col[:h, [0]], np.array([[0]]), col[h:np.size(col), [0]]))
 
 
 solution, optimal_value = simplex("min",
