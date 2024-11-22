@@ -7,7 +7,7 @@ from typing import Any
 class Visualization:
     def __init__(self, a0: float, b0: float, func: Any, eps: float) -> None:
         mpl_style(minor_ticks=False)
-        self.fig = plt.figure("MODS 2.1 visualization", figsize=(16, 9))
+        self.fig = plt.figure("mods 2.1 visualization", figsize=(16, 9))
         self.ax = self.fig.subplots()
         self.x: list = []
         self.y: list = []
