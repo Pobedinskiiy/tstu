@@ -16,10 +16,8 @@ class Simplex(Visualization):
         self.a, self.b, self.c, self.d, self.m = a, b, c, d, m
 
     def calculate(self) -> (np.ndarray, np.ndarray):
-        (l, n) = self.a.shape
-        basic_vars = []
-        count = n
-        valid_ratios_mask = np.eye(l)
+        l, n = self.a.shape
+        count, basic_vars, valid_ratios_mask = n, [], np.eye(l)
 
         for i in range(l):
             basic_vars.append(count)
@@ -73,9 +71,9 @@ class Simplex(Visualization):
         return decision, tableau[0, -1]
 
     @staticmethod
-    def __repeat_column_negative(mat, h) -> np.ndarray:
+    def __repeat_column_negative(mat: np.ndarray, h: int) -> np.ndarray:
         return np.hstack((mat[:, :h], -mat[:, [h]], mat[:, h:np.size(mat)]))
 
     @staticmethod
-    def __insert_zero_to_col(col, h) -> np.ndarray:
+    def __insert_zero_to_col(col: np.ndarray, h: int) -> np.ndarray:
         return np.vstack((col[:h, [0]], np.array([[0]]), col[h:np.size(col), [0]]))
