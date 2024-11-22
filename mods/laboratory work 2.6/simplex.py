@@ -30,7 +30,7 @@ class Simplex(Visualization):
                 self.c = np.vstack((self.c, [[self.m if self.opt_type == OptType.MIN else -self.m]]))
                 count += 1
             elif self.d[i] == -1:
-                c = np.vstack((self.c, [[0], [self.m if self.opt_type == OptType.MIN else -self.m]]))
+                self.c = np.vstack((self.c, [[0], [self.m if self.opt_type == OptType.MIN else -self.m]]))
                 valid_ratios_mask = self.__repeat_column_negative(valid_ratios_mask, count - n)
                 count += 2
 
