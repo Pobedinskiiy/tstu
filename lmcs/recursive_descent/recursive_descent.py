@@ -23,6 +23,7 @@ class Parser:
         print("Анализируем оператор(ы) в программе.")
         self.statement()
         while self.current_token == ';':
+            print("Следующий сегмент")
             self.next_token()
             self.statement()
 
@@ -83,6 +84,10 @@ class Parser:
             self.match(self.current_token)
         elif self.current_token.isdigit():
             self.match(self.current_token)
+        elif self.current_token == '(':
+            self.match('(')
+            self.arithmetic_expression()
+            self.match(')')
         else:
             self.error()
 
@@ -108,8 +113,9 @@ def tokenize(code):
     tokens = []
     code = code.replace('(', ' ( ').replace(')', ' ) ')
     code = code.replace(',', ' , ')
+    code = code.replace(';', ' ; ')
     for token in code.split():
-        if token.isidentifier() or token.isdigit() or token in ['if', 'THEN', 'else', 'writeln', ':=', '+', '-', '*', '/', '<', '>', '<=', '>=', '=', '<>']:
+        if token.isidentifier() or token.isdigit() or token in ['if', 'THEN', 'else', 'writeln', ':=', '+', '-', '*', '/', '<', '>', '<=', '>=', '=', '<>', ';', '(', ')']:
             tokens.append(token)
     return tokens
 
