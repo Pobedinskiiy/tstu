@@ -17,4 +17,4 @@ solution, optimal_value = simplex.calculate()
 print(f"Оптимальное решение: x1 = {solution[0, 0]:.4f}, x2 = {solution[1, 0]:.4f}")
 print(f"Минимальное значение Z = {optimal_value:.4f}")
 
-simplex.plot()
+simplex.plot([-10, 30], [-10, 30], 50)

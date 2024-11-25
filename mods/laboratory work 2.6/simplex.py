@@ -11,7 +11,7 @@ class OptType(Enum):
 
 class Simplex(Visualization):
     def __init__(self, opt_type: OptType, a: np.ndarray, b: np.ndarray, c: np.ndarray, d: np.ndarray, m: float) -> None:
-        super().__init__()
+        super().__init__(c)
         self.opt_type = opt_type
         self.a, self.b, self.c, self.d, self.m = a, b, c, d, m
 
@@ -68,6 +68,7 @@ class Simplex(Visualization):
 
             tableau[0, -1] = cz[0, -1] - cz[[0], :count] @ decision
 
+        self.x, self.y = decision[0, 0], decision[1, 0]
         return decision, tableau[0, -1]
 
     @staticmethod
