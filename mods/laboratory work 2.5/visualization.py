@@ -17,6 +17,8 @@ class Visualization:
         fig.colorbar(ax.contour(fx, fy, fz, levels=levels, cmap="viridis"))
         ax.set_xlabel("x")
         ax.set_ylabel("y")
+        ax.axis(xmin = x_border[0], xmax = x_border[1])
+        ax.axis(ymin = y_border[0], ymax = y_border[1])
         ax.grid()
         for i in range(len(self.inv_bounds)):
             fx_bound, fy_bound = fx, fy
