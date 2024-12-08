@@ -1,1 +1,5 @@
+.idea
 venv
+go.sum
+go.mod
+configs/config.yml

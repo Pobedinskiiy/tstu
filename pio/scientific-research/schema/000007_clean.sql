@@ -1,0 +1,7 @@
+BEGIN;
+
+TRUNCATE TABLE sources_funding CASCADE;
+
+TRUNCATE TABLE departments CASCADE;
+
+COMMIT;
