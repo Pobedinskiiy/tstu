@@ -1,136 +1,108 @@
-class Parser:
-    def __init__(self, tokens):
+from log import logging
+
+
+class RecursiveDescent:
+    def __init__(self) -> None:
+        self.tokens = None
+        self.current_token = None
+
+    def parse_syntactically(self, tokens: list) -> None:
         self.tokens = tokens
         self.current_token = None
+        logging.debug("Начинаем парсинг программы.")
+        self.statements()
+        logging.debug("Парсинг завершён.")
+
+    def statements(self):
+        logging.debug("Анализируем оператор(ы) в программе.")
         self.next_token()
+        self.statement()
+        while self.current_token == 13:
+            logging.debug("Следующий сегмент")
+            self.next_token()
+            self.statement()
 
     def next_token(self):
         if self.tokens:
             self.current_token = self.tokens.pop(0)
-            print(self.current_token)
+            logging.debug(f"Текущий токен: {self.current_token}")
         else:
             self.current_token = None
 
-    def parse(self):
-        print("Начинаем парсинг программы.")
-        self.program()
-        print("Парсинг завершён.")
-
-    def program(self):
-        self.statements()
-
-    def statements(self):
-        print("Анализируем оператор(ы) в программе.")
-        self.statement()
-        while self.current_token == ';':
-            print("Следующий сегмент")
-            self.next_token()
-            self.statement()
-
     def statement(self):
-        print(f"Текущий токен: {self.current_token}")
-        if self.current_token == 'if':
+        if self.current_token == 1:
             self.conditional_statement()
-        elif self.current_token == 'writeln':
+        elif self.current_token == 4:
             self.output_statement()
-        elif self.current_token.isidentifier():
+        elif self.current_token[0] == 15:
             self.assignment()
         else:
             self.error()
 
     def conditional_statement(self):
-        print("Анализ условия (if).")
-        self.match('if')
+        logging.debug("Анализ условия (if).")
+        self.match(1)
         self.conditional_expression()
-        self.match('THEN')
-        self.statements()
-        if self.current_token == 'else':
-            self.match('else')
-            self.statements()
+        self.match(2)
+        self.statement()
+        if self.current_token == 3:
+            self.match(3)
+            self.statement()
 
     def conditional_expression(self):
-        print("Анализ условного выражения.")
+        logging.debug("Анализ условного выражения.")
         self.arithmetic_expression()
-        if self.current_token in ['<>', '=', '<=', '>=', '<', '>']:
+        if self.current_token in [12]:
             self.match(self.current_token)
             self.arithmetic_expression()
         else:
             self.error()
 
     def assignment(self):
-        print("Анализ присваивания.")
-        id = self.current_token
-        self.match(id)
-        self.match(':=')
+        logging.debug("Анализ присваивания.")
+        self.match(self.current_token)
+        self.match(7)
         self.arithmetic_expression()
 
-    def arithmetic_expression(self):
-        print("Анализ арифметического выражения.")
+    def arithmetic_expression(self) -> None:
+        logging.debug("Анализ арифметического выражения.")
         self.term()
-        while self.current_token in ['+', '-']:
+        while self.current_token in [8, 9]:
             self.match(self.current_token)
             self.term()
 
-    def term(self):
-        print("Анализ слогаемого")
+    def term(self) -> None:
+        logging.debug("Анализ слагаемого")
         self.factor()
-        while self.current_token in ['*', '/']:
+        while self.current_token in [10, 11]:
             self.match(self.current_token)
             self.factor()
 
-    def factor(self):
-        print("Анализ множителя")
-        if self.current_token.isidentifier():
-            self.match(self.current_token)
-        elif self.current_token.isdigit():
-            self.match(self.current_token)
-        elif self.current_token == '(':
-            self.match('(')
+    def factor(self) -> None:
+        logging.debug("Анализ множителя")
+        if self.current_token == 5:
+            self.match(5)
             self.arithmetic_expression()
-            self.match(')')
+            self.match(6)
+        elif self.current_token[0] in [14, 15]:
+            self.match(self.current_token)
         else:
             self.error()
 
-    def output_statement(self):
-        print("Анализ оператора вывода.")
-        self.match('writeln')
-        self.match('(')
-        if self.current_token.isidentifier() or self.current_token.isdigit():
+    def output_statement(self) -> None:
+        logging.debug("Анализ оператора вывода.")
+        self.match(4)
+        self.match(5)
+        if self.current_token[0] in [14, 15]:
             self.match(self.current_token)
-        self.match(')')
+        self.match(6)
 
-    def match(self, expected_token):
+    def match(self, expected_token) -> None:
         if self.current_token == expected_token:
-            print(f"Сопоставлен: {expected_token}")
+            logging.debug(f"Сопоставлен: {expected_token}")
             self.next_token()
         else:
             self.error()
 
-    def error(self):
+    def error(self) -> None:
         raise Exception(f"Синтаксическая ошибка: неожиданный токен: {self.current_token}")
-
-def tokenize(code):
-    tokens = []
-    code = code.replace('(', ' ( ').replace(')', ' ) ')
-    code = code.replace(',', ' , ')
-    code = code.replace(';', ' ; ')
-    for token in code.split():
-        if token.isidentifier() or token.isdigit() or token in ['if', 'THEN', 'else', 'writeln', ':=', '+', '-', '*', '/', '<', '>', '<=', '>=', '=', '<>', ';', '(', ')']:
-            tokens.append(token)
-    return tokens
-
-code = """
-if (X + Y) <> 0 THEN
-A := (X * X + Z * Z) / (1 + 1 / (X - Y * Z))
-else A := 0;
-writeln(A)
-"""
-
-tokens = tokenize(code)
-print(tokens)
-parser = Parser(tokens)
-try:
-    parser.parse()
-    print("Код успешно разобран.")
-except Exception as e:
-    print(f"Ошибка разбора: {e}")

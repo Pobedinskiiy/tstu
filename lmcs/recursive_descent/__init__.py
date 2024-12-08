@@ -1,1 +1,1 @@
-from recursive_descent import Parser
+from .recursive_descent import RecursiveDescent
