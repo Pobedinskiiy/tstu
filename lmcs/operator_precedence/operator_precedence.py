@@ -1,4 +1,4 @@
-from log import logging
+import logging
 
 
 class OperatorPrecedence:

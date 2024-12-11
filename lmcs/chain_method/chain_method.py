@@ -1,0 +1,2 @@
+class Chain:
+    pass

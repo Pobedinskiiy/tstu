@@ -1,4 +1,4 @@
-from log import logging
+import logging
 
 class Decoder:
     lexemes: dict = {
@@ -20,7 +20,7 @@ class Decoder:
     }
 
     def decoding(self, code: str) -> list:
-        logging.info(f"Лексемы словаря: {self.lexemes}")
+        logging.debug(f"Лексемы словаря: {self.lexemes}")
 
         tokens = []
         for key in self.lexemes.keys():
