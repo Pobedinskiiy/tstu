@@ -19,6 +19,7 @@ logging.info(f"Код программы: {code}")
 
 decoder = Decoder()
 tokens = decoder.decoding(code)
+decoder.show_chain()
 
 logging.info(f"Декодированная программа: {tokens}")
 
