@@ -39,6 +39,13 @@ def extreme(target_x2, slope = 0.0, tolerance=1e-2):
 
 t1, x1, t2, x2 = 1, 0, 2, 1
 
+# Находим экстремум
+optimal_slope = extreme(x2)
+
+# Вычисляем значение функционала в точке экстремума
+optimal_value = functional(t2)
+print(optimal_value)
+
 mpl_style(minor_ticks=False)
 fig = plt.figure("3.1 visualization", figsize=(16, 9))
 ax = fig.subplots()
