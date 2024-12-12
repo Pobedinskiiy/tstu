@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from qbstyles import mpl_style
 
 
-def extremal_func(t):
+def functional(t):
     return 0.3 * t - 0.3 / t ** 2 + (t * np.log(t)) / 3
 
 
@@ -43,8 +43,8 @@ mpl_style(minor_ticks=False)
 fig = plt.figure("3.1 visualization", figsize=(16, 9))
 ax = fig.subplots()
 ax.set_title("Решение краевой задачи с использованием метода пристрелки")
-ax.plot(np.linspace(t1, t2, 20), [extremal_func(t) for t in np.linspace(t1, t2, 20)], label="x(t)")
-ax.plot(np.linspace(t1, t2, 20), [find_slope(t) for t in np.linspace(t1, t2, 20)], label="Функция методом пристрелки", linestyle="--")
+ax.plot(np.linspace(t1, t2, 5), [functional(t) for t in np.linspace(t1, t2, 5)], label="x(t)")
+ax.plot(np.linspace(t1, t2, 5), [find_slope(t) for t in np.linspace(t1, t2, 5)], label="экстремаль", linestyle="--")
 ax.set_xlabel("t")
 ax.set_ylabel("x")
 ax.legend()
