@@ -20,12 +20,12 @@ def shooting_method(slope):
     x_values[0] = x1
 
     for i in range(num_steps):
-        x_values[i + 1] = x_values[i] + h * (slope + derivative(extremal_func, t_values[i]))
+        x_values[i + 1] = x_values[i] + h * (slope + derivative(functional, t_values[i]))
 
     return x_values[-1]
 
 
-def find_slope(target_x2, slope = 0.0, tolerance=1e-2):
+def extreme(target_x2, slope = 0.0, tolerance=1e-2):
     while True:
         error = shooting_method(slope) - target_x2
 
@@ -44,7 +44,7 @@ fig = plt.figure("3.1 visualization", figsize=(16, 9))
 ax = fig.subplots()
 ax.set_title("Решение краевой задачи с использованием метода пристрелки")
 ax.plot(np.linspace(t1, t2, 5), [functional(t) for t in np.linspace(t1, t2, 5)], label="x(t)")
-ax.plot(np.linspace(t1, t2, 5), [find_slope(t) for t in np.linspace(t1, t2, 5)], label="экстремаль", linestyle="--")
+ax.plot(np.linspace(t1, t2, 5), [extreme(t) for t in np.linspace(t1, t2, 5)], label="экстремаль", linestyle="--")
 ax.set_xlabel("t")
 ax.set_ylabel("x")
 ax.legend()
