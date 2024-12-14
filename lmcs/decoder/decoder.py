@@ -21,10 +21,8 @@ class Decoder:
     }
 
     def __init__(self):
-        self.ident_map = {}
-        self.ident_matrix_cursor = -1
-        self.ident_matrix = []
-        self.hash_matrix = {}
+        self.ident_ptr = []
+        self.hash_ident = {}
 
     def decoding(self, code: str) -> list:
         logging.debug(f"Лексемы словаря: {self.lexemes}")
@@ -41,33 +39,33 @@ class Decoder:
                 tokens.append([14, token])
             elif token.isidentifier():
                 tokens.append([15, token])
-                self.add_ident(token)
+                self.add_ident(token, "float")
 
         return tokens
 
-    def add_ident(self, ident: str) -> None:
+    def add_ident(self, ident: str, type_ident: str) -> None:
         h = self.hash_func(ident)
         logging.debug(f"Ид: {ident} - хеш: {h}")
-        self.ident_matrix_cursor += 1
-        self.ident_matrix.append([ident, 0, 0])
 
-        if h not in self.hash_matrix:
-            self.hash_matrix[h] = self.ident_matrix_cursor
+        if h not in self.hash_ident:
+            self.hash_ident[h] = len(self.ident_ptr)
         else:
-            ident = self.hash_matrix[h]
-            while self.ident_matrix[ident][2] != 0:
-                ident = self.ident_matrix[ident][2]
-            self.ident_matrix[ident][2] = self.ident_matrix_cursor
+            index = self.ident_ptr[self.hash_ident[h]][2]
+            if index == 0:
+                self.ident_ptr[self.hash_ident[h]][2] = len(self.ident_ptr)
+            else:
+                while self.ident_ptr[index][2] != 0:
+                    index = self.ident_ptr[index][2]
+                self.ident_ptr[index][2] = len(self.ident_ptr)
+        self.ident_ptr.append([ident, type_ident, 0])
 
-        if ident not in self.ident_map:
-            self.ident_map[ident] = len(self.ident_map)
-
-        logging.debug(f"Хеш таблица: {self.hash_matrix} {self.ident_matrix}")
+        logging.debug(f"Хеш таблица: {self.hash_ident}, таблица ссылок индентификаторов: {self.ident_ptr}")
 
     def show_chain(self):
         logging.info("Хеш таблица:")
-        logging.info(self.hash_matrix)
-        logging.info(self.ident_matrix)
+        logging.info(self.hash_ident)
+        for i in range(len(self.ident_ptr)):
+            logging.info(self.ident_ptr[i])
 
     @staticmethod
     def hash_func(ident: str) -> int:
