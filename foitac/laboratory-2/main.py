@@ -110,7 +110,7 @@ class ImageToGrayscale(QMainWindow, Ui_ImageConverter):
         current_row = 0
         current_col = 0
 
-        fragments = re.findall(r'(\d+)([bw])', image_txt)  # Используем регулярное выражение для парсинга
+        fragments = re.findall(r'(\d+)([bw])', image_txt)
 
         if not fragments:
             print("Ошибка: Неверный формат image_txt.")
