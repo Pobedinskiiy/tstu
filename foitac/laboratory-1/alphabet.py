@@ -11,11 +11,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class Ui_Alphabet(object):
+    def setupUi(self, Alphabet):
+        Alphabet.setObjectName("Alphabet")
+        Alphabet.resize(800, 600)
+        self.centralwidget = QtWidgets.QWidget(Alphabet)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 10, 791, 561))
@@ -28,6 +28,9 @@ class Ui_MainWindow(object):
         self.languageComboBox.addItem("")
         self.languageComboBox.addItem("")
         self.verticalLayout.addWidget(self.languageComboBox)
+        self.addAlphabetButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.addAlphabetButton.setObjectName("addAlphabetButton")
+        self.verticalLayout.addWidget(self.addAlphabetButton)
         self.inTextEdit = QtWidgets.QTextEdit(self.verticalLayoutWidget)
         self.inTextEdit.setObjectName("inTextEdit")
         self.verticalLayout.addWidget(self.inTextEdit)
@@ -37,17 +40,18 @@ class Ui_MainWindow(object):
         self.outTextEdit = QtWidgets.QTextEdit(self.verticalLayoutWidget)
         self.outTextEdit.setObjectName("outTextEdit")
         self.verticalLayout.addWidget(self.outTextEdit)
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        Alphabet.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(Alphabet)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        Alphabet.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(Alphabet)
+        QtCore.QMetaObject.connectSlotsByName(Alphabet)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, Alphabet):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Алфавит"))
-        self.languageComboBox.setItemText(0, _translate("MainWindow", "Русский"))
-        self.languageComboBox.setItemText(1, _translate("MainWindow", "Английский"))
-        self.inputButton.setText(_translate("MainWindow", "Ввести текст"))
+        Alphabet.setWindowTitle(_translate("Alphabet", "Алфавит"))
+        self.languageComboBox.setItemText(0, _translate("Alphabet", "Русский"))
+        self.languageComboBox.setItemText(1, _translate("Alphabet", "Английский"))
+        self.addAlphabetButton.setText(_translate("Alphabet", "Добавить алфавит"))
+        self.inputButton.setText(_translate("Alphabet", "Ввести текст"))

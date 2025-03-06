@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Alphabet</class>
+ <widget class="QMainWindow" name="Alphabet">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -36,6 +36,13 @@
          <string>Английский</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="addAlphabetButton">
+       <property name="text">
+        <string>Добавить алфавит</string>
+       </property>
       </widget>
      </item>
      <item>
