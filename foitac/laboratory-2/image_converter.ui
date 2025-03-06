@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>694</height>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,12 +58,25 @@
      <rect>
       <x>0</x>
       <y>640</y>
-      <width>791</width>
+      <width>391</width>
       <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>Сжать изображение </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="unpackButton">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>640</y>
+      <width>391</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Распаковать изображение</string>
     </property>
    </widget>
   </widget>
