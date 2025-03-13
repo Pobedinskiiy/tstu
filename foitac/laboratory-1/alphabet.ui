@@ -28,12 +28,12 @@
       <widget class="QComboBox" name="languageComboBox">
        <item>
         <property name="text">
-         <string>Русский</string>
+         <string>rus</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Английский</string>
+         <string>en</string>
         </property>
        </item>
       </widget>
@@ -49,9 +49,9 @@
       <widget class="QTextEdit" name="inTextEdit"/>
      </item>
      <item>
-      <widget class="QPushButton" name="inputButton">
+      <widget class="QPushButton" name="analyzeMessageButton">
        <property name="text">
-        <string>Ввести текст</string>
+        <string>Анализировать сообщение</string>
        </property>
       </widget>
      </item>

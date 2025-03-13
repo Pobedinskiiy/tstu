@@ -34,9 +34,9 @@ class Ui_Alphabet(object):
         self.inTextEdit = QtWidgets.QTextEdit(self.verticalLayoutWidget)
         self.inTextEdit.setObjectName("inTextEdit")
         self.verticalLayout.addWidget(self.inTextEdit)
-        self.inputButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.inputButton.setObjectName("inputButton")
-        self.verticalLayout.addWidget(self.inputButton)
+        self.analyzeMessageButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.analyzeMessageButton.setObjectName("analyzeMessageButton")
+        self.verticalLayout.addWidget(self.analyzeMessageButton)
         self.outTextEdit = QtWidgets.QTextEdit(self.verticalLayoutWidget)
         self.outTextEdit.setObjectName("outTextEdit")
         self.verticalLayout.addWidget(self.outTextEdit)
@@ -51,7 +51,7 @@ class Ui_Alphabet(object):
     def retranslateUi(self, Alphabet):
         _translate = QtCore.QCoreApplication.translate
         Alphabet.setWindowTitle(_translate("Alphabet", "Алфавит"))
-        self.languageComboBox.setItemText(0, _translate("Alphabet", "Русский"))
-        self.languageComboBox.setItemText(1, _translate("Alphabet", "Английский"))
+        self.languageComboBox.setItemText(0, _translate("Alphabet", "rus"))
+        self.languageComboBox.setItemText(1, _translate("Alphabet", "en"))
         self.addAlphabetButton.setText(_translate("Alphabet", "Добавить алфавит"))
-        self.inputButton.setText(_translate("Alphabet", "Ввести текст"))
+        self.analyzeMessageButton.setText(_translate("Alphabet", "Анализировать сообщение"))
