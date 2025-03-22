@@ -1,27 +1,35 @@
 import matplotlib.pyplot as plt
+from qbstyles import mpl_style
 
 
-Tr, r, kt, F, ct = 90, 2.26 * 1e+6, 5000, 10, 4187
+c_0, c_1 = 6, 12
+c_ent = 9
+delta_c = 0.4
+m_0, m_1 = 3.8, 5.4
+m_ent = 4.2
+delta_m = 0.2
+temp_0, temp_1 = 120, 140
+temp_p = 130
+d_temp = 0.5
 
-delta_t = 0.1               # с
-t0, t1 = 0, 500             # с
+temp_r, r, k_t, F, c_t = 90, 2.26 * 1e+6, 5000, 10, 4187
 
-sigma = 0.12                # кг
-S = 0.75                    # м^2
-P0, P1 = 7900, 7600         # кг/м^2
+m_vt = -k_t * F * (temp_p - temp_r) / (c_t * temp_p - r)
 
-delta_Cent = 4              # %
-delta_Ment = 3.2            # кг/м^2
-delta_Tp = 9                # °C
+delta_time = 0.1
+time_0, time_1 = 0, 500
 
-c0, m0, T0 = 6, 3.8, 120
+sigma = 0.12                                                # кг
+S = 0.75                                                    # м^2
+P0, P1 = 7900, 7600                                         # кг/м^2
+
+delta_c_ent = 4                                             # %
+delta_m_ent = 3.2                                           # кг/м^2
+delta_temp_p = 9                                            # °C
 
 
-def get_C(c_in, m_in, t_in):
-    return m_in * c_in / (kt * F * (t_in - Tr) / (ct * Tr - r) + m_in)
-
-def M(m):
-    return S * ((m / sigma) ** 2 + P1 - P0)
+def get_c(c_in, m_in, t_in):
+    return m_in * c_in / (m_in + k_t * F * (t_in - temp_r) / (c_t * temp_r - r))
 
 def m_out(M):
     return sigma * ((P0 + M / S - P1) ** 0.5)
@@ -30,89 +38,79 @@ def dCdt(c_in, c_out, dM, M, m_in):
     return (m_in * c_in - m_out(M) * c_out - c_out * dM) / M
 
 def dMdt(M, m_in, T):
-    return (r * m_in - r * m_out(M) - kt * F * (T - Tr) - (m_in - m_out(M)) * ct * Tr) / (r - ct * Tr)
+    return (r * m_in - r * m_out(M) - k_t * F * (T - temp_r) - (m_in - m_out(M)) * c_t * temp_r) / (r - c_t * temp_r)
 
-def main_count(M0, C0, c_in, m_in, t_in, param):
-    tao_i = t0
+def main_count(M_0, C_0, c_in, m_in, t_in, param_in):
+    time_i = time_0
+    arr_c, arr_time, arr_param_in = [], [], []
 
-    C, tao, in_p = [C0], [t0], []
+    while time_i < time_1:
+        arr_c.append(C_0)
+        arr_time.append(time_i)
 
-    if param == "C":
-        in_p.append(c_in)
-    elif param == "T":
-        in_p.append(t_in)
-    elif param == "m":
-        in_p.append(m_in)
+        if param_in == "C":
+            if len(arr_c) == 2:
+                c_in += delta_c_ent
+            arr_param_in.append(c_in)
+        elif param_in == "m":
+            if len(arr_c) == 2:
+                m_in += delta_m_ent
+            arr_param_in.append(m_in)
+        elif param_in == "T":
+            if len(arr_c) == 2:
+                t_in += delta_temp_p
+            arr_param_in.append(t_in)
 
-    while tao_i < t1:
-        d_M = dMdt(M0, m_in, t_in)
-        M1 = M0 + d_M * delta_t
-        C1 = C0 + dCdt(c_in, C0, d_M, M0, m_in) * delta_t
+        d_M = dMdt(M_0, m_in, t_in)
+        M_1 = M_0 + d_M * delta_time
+        C_0 += dCdt(c_in, C_0, d_M, M_0, m_in) * delta_time
+        M_0 = M_1
 
-        C.append(C1)
-        tao.append(tao_i)
+        time_i += delta_time
 
-        if len(C) == 10:
-            if param == "C":
-                c_in += delta_Cent
-            elif param == "T":
-                t_in += delta_Tp
-            elif param == "m":
-                m_in += delta_Ment
-
-        if param == "C":
-            in_p.append(c_in)
-        elif param == "T":
-            in_p.append(t_in)
-        elif param == "m":
-            in_p.append(m_in)
-
-        M0 = M1
-        C0 = C1
-
-        tao_i += delta_t
-
-    return C, in_p, tao
+    return arr_c, arr_param_in, arr_time
 
 
 if __name__ == "__main__":
-    M0 = M(m0 - m0 * c0 / 100)
-    C0 = get_C(c0, m0, T0)
+    M0 = S * (((m_0 - m_vt) / sigma) ** 2 + P1 - P0)
+    C0 = get_c(c_0, m_0, temp_0)
 
-    C1, C_input, tao1 = main_count(M0, C0, c0, m0, T0, "C")
-    C2, T_input, tao2 = main_count(M0, C0, c0, m0, T0, "T")
-    C3, m_input, tao3 = main_count(M0, C0, c0, m0, T0, "m")
+    C_ex_c, C_input, time_c = main_count(M0, C0, c_0, m_0, temp_0, "C")
+    C_ex_m, m_input, time_m = main_count(M0, C0, c_0, m_0, temp_0, "m")
+    C_ex_T, T_input, time_T = main_count(M0, C0, c_0, m_0, temp_0, "T")
 
-    fig, ax = plt.subplots(3, ncols=2, figsize=(8, 10))
+    mpl_style(minor_ticks=False)
+    fig = plt.figure("Laboratory 2", figsize=(16, 9))
+    axs = fig.subplots(nrows=3, ncols=2)
 
-    ax[0][0].plot(tao1, C1, color="r")
-    ax[0][0].set_xlabel("tao")
-    ax[0][0].set_ylabel("C")
-    ax[0][0].grid()
+    axs[0][0].plot(time_c, C_ex_c, color="r")
+    axs[0][0].set_xlabel("time")
+    axs[0][0].set_ylabel("C_ex")
+    axs[0][0].grid(True)
 
-    ax[1][0].plot(tao2, C2, color="g")
-    ax[1][0].set_xlabel("tao")
-    ax[1][0].set_ylabel("C")
-    ax[1][0].grid()
+    axs[0][1].plot(time_c, C_input, color="r")
+    axs[0][1].set_xlabel("time")
+    axs[0][1].set_ylabel("C_ent")
+    axs[0][1].grid(True)
 
-    ax[2][0].plot(tao3, C3, color="b")
-    ax[2][0].set_xlabel("tao")
-    ax[2][0].set_ylabel("C")
-    ax[2][0].grid()
+    axs[1][0].plot(time_m, C_ex_m, color="g")
+    axs[1][0].set_xlabel("time")
+    axs[1][0].set_ylabel("C_ex")
+    axs[1][0].grid(True)
 
-    ax[0][1].plot(tao1, C_input, color="r")
-    ax[0][1].set_xlabel("tao")
-    ax[0][1].set_ylabel("C_in")
-    ax[0][1].grid()
+    axs[1][1].plot(time_m, m_input, color="g")
+    axs[1][1].set_xlabel("time")
+    axs[1][1].set_ylabel("m_ent")
+    axs[1][1].grid(True)
 
-    ax[1][1].plot(tao2, T_input, color="g")
-    ax[1][1].set_xlabel("tao")
-    ax[1][1].set_ylabel("T_in")
-    ax[1][1].grid()
+    axs[2][0].plot(time_T, C_ex_T, color="b")
+    axs[2][0].set_xlabel("time")
+    axs[2][0].set_ylabel("C_ex")
+    axs[2][0].grid(True)
 
-    ax[2][1].plot(tao3, m_input, color="b")
-    ax[2][1].set_xlabel("tao")
-    ax[2][1].set_ylabel("m_in")
-    ax[2][1].grid()
+    axs[2][1].plot(time_T, T_input, color="b")
+    axs[2][1].set_xlabel("time")
+    axs[2][1].set_ylabel("T_ent")
+    axs[2][1].grid(True)
 
     plt.show()

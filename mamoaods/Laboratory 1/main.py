@@ -1,63 +1,62 @@
 import matplotlib.pyplot as plt
+from qbstyles import mpl_style
 
 
-C0, C1 = 6, 12
-C_ent = 9
-d_C = 0.4
-m0, m1 = 3.8, 5.4
+c_0, c_1 = 6, 12
+c_ent = 9
+delta_c = 0.4
+m_0, m_1 = 3.8, 5.4
 m_ent = 4.2
-d_m = 0.2
-T0, T1 = 120, 140
-Tp = 130
-d_T = 0.5
+delta_m = 0.2
+temp_0, temp_1 = 120, 140
+temp_p = 130
+d_temp = 0.5
 
-Tr, r, kt, F, c1 = 90, 2.26 * 10 ** 6, 5000, 10, 4187
+temp_r, r, k_t, F, c_t = 90, 2.26 * 1e+6, 5000, 10, 4187
 
-
-def func(C_ent, m_ent, T_P):
-    return (m_ent * C_ent) / (m_ent - ((kt * F * (T_P - Tr)) / (r - c1 * T_P)))
-
-
-C0_values, C_exC0_values = [], []
-m0_values, C_exm0_values = [], []
-T0_values, C_exT0_values = [], []
-
-while C0 < C1:
-    C_ex = func(C0, m0, Tp)
-    C0_values.append(C0)
-    C_exC0_values.append(C_ex)
-    C0 += d_C
-
-while m0 < m1:
-    C_ex = func(C_ent, m0, Tp)
-    m0_values.append(m0)
-    C_exm0_values.append(C_ex)
-    m0 += d_m
-
-while T0 < T1:
-    C_ex = func(C_ent, m0, T0)
-    T0_values.append(T0)
-    C_exT0_values.append(C_ex)
-    T0 += d_T
+def get_c(c_in, m_in, t_in):
+    return (m_in * c_in) / (m_in + ((k_t * F * (t_in - temp_r)) / (c_t * t_in - r)))
 
 
-fig, axs = plt.subplots(3, 1, figsize=(9, 16))
-axs[0].plot(C0_values, C_exC0_values)
-axs[0].set_xlabel("C0")
-axs[0].set_ylabel("C_ex")
-axs[0].set_title("График зависимости C_ex от C0")
-axs[0].grid(True)
+if __name__ == "__main__":
+    C0_values, C_exC0_values = [], []
+    m0_values, C_exm0_values = [], []
+    T0_values, C_exT0_values = [], []
 
-axs[1].plot(m0_values, C_exm0_values)
-axs[1].set_xlabel("m0")
-axs[1].set_ylabel("m_ex")
-axs[1].set_title("График зависимости C_ex от m0")
-axs[1].grid(True)
+    while c_0 < c_1:
+        C_ex = get_c(c_0, m_ent, temp_p)
+        C0_values.append(c_0)
+        C_exC0_values.append(C_ex)
+        c_0 += delta_c
 
-axs[2].plot(T0_values, C_exT0_values)
-axs[2].set_xlabel("T0")
-axs[2].set_ylabel("T_ex")
-axs[2].set_title("График зависимости C_ex от T0")
-axs[2].grid(True)
+    while m_0 < m_1:
+        C_ex = get_c(c_ent, m_0, temp_p)
+        m0_values.append(m_0)
+        C_exm0_values.append(C_ex)
+        m_0 += delta_m
 
-plt.show()
+    while temp_0 < temp_1:
+        C_ex = get_c(c_ent, m_ent, temp_0)
+        T0_values.append(temp_0)
+        C_exT0_values.append(C_ex)
+        temp_0 += d_temp
+
+    mpl_style(minor_ticks=False)
+    fig = plt.figure("Laboratory 1", figsize=(16, 9))
+    axs = fig.subplots(nrows=3, ncols=1)
+    axs[0].plot(C0_values, C_exC0_values, color="r")
+    axs[0].set_xlabel("C0")
+    axs[0].set_ylabel("C_ex")
+    axs[0].grid(True)
+
+    axs[1].plot(m0_values, C_exm0_values, color="g")
+    axs[1].set_xlabel("m0")
+    axs[1].set_ylabel("C_ex")
+    axs[1].grid(True)
+
+    axs[2].plot(T0_values, C_exT0_values, color="b")
+    axs[2].set_xlabel("T0")
+    axs[2].set_ylabel("C_ex")
+    axs[2].grid(True)
+
+    plt.show()
