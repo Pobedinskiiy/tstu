@@ -23,9 +23,9 @@ sigma = 0.12                                                # кг
 S = 0.75                                                    # м^2
 P0, P1 = 7900, 7600                                         # кг/м^2
 
-delta_c_ent = 4                                             # %
+delta_c_ent = -4                                            # %
 delta_m_ent = 3.2                                           # кг/м^2
-delta_temp_p = 9                                            # °C
+delta_temp_p = -9                                           # °C
 
 
 def get_c(c_in, m_in, t_in):
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     C_ex_T, T_input, time_T = main_count(M0, C0, c_0, m_0, temp_0, "T")
 
     mpl_style(minor_ticks=False)
-    fig = plt.figure("Laboratory 2", figsize=(16, 9))
+    fig = plt.figure("Laboratory 2", figsize=(9, 16))
     axs = fig.subplots(nrows=3, ncols=2)
 
     axs[0][0].plot(time_c, C_ex_c, color="r")

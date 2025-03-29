@@ -42,7 +42,7 @@ if __name__ == "__main__":
         temp_0 += d_temp
 
     mpl_style(minor_ticks=False)
-    fig = plt.figure("Laboratory 1", figsize=(16, 9))
+    fig = plt.figure("Laboratory 1", figsize=(9, 16))
     axs = fig.subplots(nrows=3, ncols=1)
     axs[0].plot(C0_values, C_exC0_values, color="r")
     axs[0].set_xlabel("C0")
