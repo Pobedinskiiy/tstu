@@ -1,4 +1,4 @@
-from math import  pi, exp, ceil
+from math import  pi, exp
 import matplotlib.pyplot as plt
 from qbstyles import mpl_style
 
@@ -9,7 +9,7 @@ m, L, T = 2.0, 200, 1300
 c_0, c_1, = 25, 37
 dC = 0.05 * (c_1 - c_0)
 
-mu = m / ((ro * pi * D ** 2) / 4)
+mu = 4 * m / (ro * pi * D ** 2)
 
 
 def k(A, E, T):
@@ -28,17 +28,15 @@ def count():
     GRAPH = []
     Ci = c_0
     while Ci <= c_1:
-        C10 = Ci * ro / (100 * 0.028)
+        C10 = Ci
         C20 = 0
         li = 0
         c1 = [C10]
         c2 = [C20]
         l = [li]
         while li <= L:
-            dc1 = dC1(T, C10)
-            C1 = C10 + dc1 * dL
-            dc2 = dC2(T, C1, C20)
-            C2 = C20 + dc2 * dL
+            C1 = C10 + dC1(T, C10) * dL
+            C2 = C20 + dC2(T, C1, C20) * dL
 
             c1.append(C1)
             c2.append(C2)
